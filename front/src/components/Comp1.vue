@@ -23,7 +23,6 @@
           start-angle="315"
           end-angle="+270"
           line-cap="round"
-          :drag="stopSlider"
           :change="changeSliderValue"
         />
       </div>
@@ -43,9 +42,7 @@ export default {
   mounted() {},
 
   methods: {
-    
     changeSliderValue(val) {
-      
       this.$emit("sliderValChange", val.value);
     },
   },
