@@ -13,7 +13,7 @@ class Decision(Page):
 
 
 class Trade(Page):
-    pass
+    live_method = 'register_event'
 
 
 page_sequence = [

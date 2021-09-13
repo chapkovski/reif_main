@@ -3,7 +3,7 @@
     <v-app-bar app height="220">
       <v-card elevation="4" v-if="newPrice" height="150" min-width="200">
         <v-card-title>
-          <span class='word-break'>Текущая цена портфеля:</span>
+          <span class="word-break">Текущая цена портфеля:</span>
         </v-card-title>
         <v-card-text class="text-h5 font-weight-bold">
           <h2>
@@ -15,9 +15,15 @@
           </h2>
         </v-card-text>
       </v-card>
-      <v-card elevation="4" v-if="currentROR" class="mx-3" height="150" min-width="200">
+      <v-card
+        elevation="4"
+        v-if="currentROR"
+        class="mx-3"
+        height="150"
+        min-width="200"
+      >
         <v-card-title>
-          <span class='word-break'>Текущая доходность:</span>
+          <span class="word-break">Текущая доходность:</span>
         </v-card-title>
         <v-card-text class="text-h5 font-weight-bold">
           <h2>
@@ -34,7 +40,7 @@
         @sliderValChange="sliderValChange"
         :sliderValue="sliderValue"
         @showDialog="innerShowDialog"
-        :reset='dialog'
+        :reset="dialog"
       />
     </v-app-bar>
     <v-dialog v-model="dialog" max-width="600">
@@ -83,7 +89,7 @@ import Comp1 from "./components/Comp1";
 import Comp2 from "./components/Comp2";
 import Comp3 from "./components/Comp3";
 import Comp4 from "./components/Comp4";
-const comps = {Comp1,Comp2, Comp3, Comp4}
+const comps = { Comp1, Comp2, Comp3, Comp4 };
 import gsap from "gsap";
 import _ from "lodash";
 
@@ -105,12 +111,11 @@ export default {
     highcharts: Chart,
   },
   data: function() {
-    
     const chunkSize = 10;
     const firstVal = window.data.slice(0, chunkSize);
     const rorFirstVal = ror.slice(0, chunkSize);
     return {
-      reset:false,
+      reset: false,
       sliderValue: 100,
       currentROR: (_.last(firstVal) - window.data[0]) / window.data[0],
       newPrice: window.data[0],
@@ -178,7 +183,6 @@ export default {
   },
   watch: {
     newPrice: function(newValue) {
-      
       gsap.to(this.$data, {
         duration: 0.5,
         tweenedPrice: newValue,
@@ -186,7 +190,8 @@ export default {
       });
     },
   },
-  mounted() {
+  async mounted() {
+    this.$options.sockets.onmessage = (data) => console.log(data);
     this.stockInterval = setInterval(() => {
       const newCounter = this.counter + this.chunkSize;
       this.newPrice = window.data[newCounter];
@@ -205,26 +210,32 @@ export default {
     }, this.tickFrequency * 1000);
   },
   methods: {
+    async sendMessage(obj){
+      if (this.$socket.readyState == 1) {
+        await this.$socket.sendObj(obj);
+      }
+    },
     tweenUpd(v) {
-      this.tweenedPrice=_.round(this.tweenedPrice,2)
+      this.tweenedPrice = _.round(this.tweenedPrice, 2);
     },
     innerShowDialog() {
       this.dialog = true;
     },
-    sliderValChange(val) {
+    async sliderValChange(val) {
       this.sliderValue = val;
       if (val == 0) {
+        await  this.sendMessage({name:'show confirming dialog', currentPrice:this.currentPrice})
         this.dialog = true;
       }
     },
 
-    continueKeeping() {
-       
+    async continueKeeping() {
+      await this.sendMessage({name:'Continue keeping', currentPrice:this.currentPrice})
       this.sliderValue = 100;
       this.dialog = false;
-      
     },
-    sell() {
+    async sell() {
+      await  this.sendMessage({name:'Sell', currentPrice:this.currentPrice})
       this.dialog = false;
       document.getElementById("form").submit();
     },
@@ -241,5 +252,7 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.word-break{    word-break: break-word;}
+.word-break {
+  word-break: break-word;
+}
 </style>

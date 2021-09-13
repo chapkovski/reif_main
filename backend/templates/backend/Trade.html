@@ -15,6 +15,7 @@
             window.drawdown = {{ player.get_drawdown|json }};
             window.data = {{ player.get_data|json }};
             window.componentNumber = {{session.config.component_number}};
+            window.socket_path = "{{ view.live_url }}"
         </script>
         <div id="app"></div>
         <script type="text/javascript" src="{% static 'front/js/chunk-vendors.js' %}"></script>
@@ -25,3 +26,5 @@
 
 {% endblock %}
 
+{% block live %}
+{% endblock %}
