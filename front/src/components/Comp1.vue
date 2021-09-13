@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="4" height=150>
+  <v-card elevation="4" height="150">
     <v-card-text class="d-flex align-items-center justify-center my-3 ">
       <div>
         <div>
@@ -12,14 +12,18 @@
         </div>
       </div>
 
-      <div class="d-flex align-items-center justify-center my-3" :style="{height:150}">
+      <div
+        class="d-flex align-items-center justify-center my-3"
+        :style="{ height: 150 }"
+      >
         <round-slider
-          radius=50
+          radius="50"
           rangeColor="green"
           :value="sliderValue"
           start-angle="315"
           end-angle="+270"
           line-cap="round"
+          :drag="stopSlider"
           :change="changeSliderValue"
         />
       </div>
@@ -39,7 +43,9 @@ export default {
   mounted() {},
 
   methods: {
+    
     changeSliderValue(val) {
+      
       this.$emit("sliderValChange", val.value);
     },
   },

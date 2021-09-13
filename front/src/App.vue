@@ -222,20 +222,22 @@ export default {
       this.dialog = true;
     },
     async sliderValChange(val) {
+      await  this.sendMessage({name:'slider value changed', sliderValue:val,  currentPrice:this.newPrice})
+        
       this.sliderValue = val;
       if (val == 0) {
-        await  this.sendMessage({name:'show confirming dialog', currentPrice:this.currentPrice})
+        await  this.sendMessage({name:'show confirming dialog', currentPrice:this.newPrice})
         this.dialog = true;
       }
     },
 
     async continueKeeping() {
-      await this.sendMessage({name:'Continue keeping', currentPrice:this.currentPrice})
+      await this.sendMessage({name:'Continue keeping', currentPrice:this.newPrice})
       this.sliderValue = 100;
       this.dialog = false;
     },
     async sell() {
-      await  this.sendMessage({name:'Sell', currentPrice:this.currentPrice})
+      await  this.sendMessage({name:'Sell', currentPrice:this.newPrice})
       this.dialog = false;
       document.getElementById("form").submit();
     },
