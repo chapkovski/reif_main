@@ -79,7 +79,11 @@
 /* eslint-disable */
 
 import { Chart } from "highcharts-vue";
-
+import Comp1 from "./components/Comp1";
+import Comp2 from "./components/Comp2";
+import Comp3 from "./components/Comp3";
+import Comp4 from "./components/Comp4";
+const comps = {Comp1,Comp2, Comp3, Comp4}
 import gsap from "gsap";
 import _ from "lodash";
 
@@ -162,7 +166,7 @@ export default {
       return this.tweenedPrice.toFixed(2);
     },
     customComp() {
-      return () => import(`@/Comp${window.componentNumber}.vue`);
+      return comps[`Comp${window.componentNumber}`];
     },
     direction() {
       if (this.currentPrice > this.previousPrice) {
