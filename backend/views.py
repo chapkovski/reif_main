@@ -29,4 +29,4 @@ class PandasExport(View):
             response['Content-Disposition'] = f'attachment; filename={filename}'
             return response
         else:
-            return redirect(reverse('export_home'))
+            return redirect(reverse('ExportIndex'))
