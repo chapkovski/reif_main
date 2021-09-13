@@ -2,10 +2,25 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-       name='prototype1',
-       display_name="prototype1",
-       num_demo_participants=1,
-       app_sequence=['backend']
+        name='prototype1',
+        display_name="prototype1 -round slider",
+        num_demo_participants=1,
+        app_sequence=['backend'],
+        component_number=1
+    ),
+    dict(
+        name='prototype2',
+        display_name="prototype 2 - button",
+        num_demo_participants=1,
+        app_sequence=['backend'],
+        component_number=2
+    ),
+    dict(
+        name='prototype3',
+        display_name=" prototype3 - Slider",
+        num_demo_participants=1,
+        app_sequence=['backend'],
+        component_number=3
     ),
 ]
 

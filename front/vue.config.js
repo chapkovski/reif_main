@@ -1,10 +1,18 @@
 const path = require("path");
 
 module.exports = {
-  pages:{
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src/components/"),
+      },
+    },
+  },
+
+  pages: {
     main: {
-        entry: './src/main.js',
-        chunks: ['chunk-vendors']
+      entry: "./src/main.js",
+      chunks: ["chunk-vendors"],
     },
   },
   // Should be STATIC_URL + path/to/build
@@ -23,7 +31,5 @@ module.exports = {
     writeToDisk: true, // Write files to disk in dev mode, so Django can serve the assets
   },
 
-  transpileDependencies: [
-    'vuetify'
-  ]
+  transpileDependencies: ["vuetify"],
 };

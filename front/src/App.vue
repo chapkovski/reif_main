@@ -1,69 +1,49 @@
 <template>
   <v-app>
-    <v-app-bar app height=350>
-
-      <v-card elevation="4" v-if="newPrice">
+    <v-app-bar app height="220">
+      <v-card elevation="4" v-if="newPrice" height="150" min-width="200">
         <v-card-title>
-          <span>Текущая цена портфеля:</span>
+          <span class='word-break'>Текущая цена портфеля:</span>
         </v-card-title>
         <v-card-text class="text-h5 font-weight-bold">
           <h2>
-            <v-icon x-large :color="direction.color">{{
-              direction.icon
-              }}
+            <v-icon x-large :color="direction.color"
+              >{{ direction.icon }}
             </v-icon>
 
             {{ tweenedPrice || newPrice }}
           </h2>
         </v-card-text>
       </v-card>
-      <v-card elevation="4" v-if="currentROR" class="mx-3">
+      <v-card elevation="4" v-if="currentROR" class="mx-3" height="150" min-width="200">
         <v-card-title>
-          <span>Текущая доходность:</span>
+          <span class='word-break'>Текущая доходность:</span>
         </v-card-title>
         <v-card-text class="text-h5 font-weight-bold">
           <h2>
-            <v-icon x-large :color="direction.color">{{
-              direction.icon
-              }}
+            <v-icon x-large :color="direction.color"
+              >{{ direction.icon }}
             </v-icon>
 
             {{ parseFloat(currentROR * 100).toFixed(2) }}%
           </h2>
         </v-card-text>
       </v-card>
-      <v-card v-if="false">
-        <v-card-text>
-          <v-btn @click="showDialog">Sell</v-btn>
-        </v-card-text>
-      </v-card>
-      <v-card elevation="4" v-if="true">
-        <v-card-title>Довольны результатом? Переместите слайдер вправо (макс 100). Недовольны - влево (мин.0).
-        </v-card-title>
-        <v-card-text>
-          <div>
-            Если хотите продать портфель до срока, переместите слайдер влево до упора (на 0). Вас попросят
-            подтвердить решение.
-          </div>
-          <div class="d-flex align-items-center justify-center my-3">
-            <round-slider
-                rangeColor="green"
-                v-model="sliderValue"
-                start-angle="315"
-                end-angle="+270"
-                line-cap="round"
-                :valueChange="changeslider"
-            />
-          </div>
-        </v-card-text>
-      </v-card>
+      <component
+        :is="customComp"
+        @sliderValChange="sliderValChange"
+        :sliderValue="sliderValue"
+        @showDialog="innerShowDialog"
+        :reset='dialog'
+      />
     </v-app-bar>
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
         <v-card-title class="text-h5"> Решение о продаже</v-card-title>
 
         <v-card-text>
-          Вы хотите продать портфель? Если Вы выберете "продать", период закончится.
+          Вы хотите продать портфель? Если Вы выберете "продать", период
+          закончится.
         </v-card-text>
 
         <v-card-actions>
@@ -79,22 +59,16 @@
     </v-dialog>
     <v-main>
       <v-container fluid>
-
         <v-row>
-          <v-col cols="12"
-          >
+          <v-col cols="12">
             <highcharts
-                :constructorType="'stockChart'"
-                class="hc"
-                :options="chartOptions"
-                ref="chart1"
-                :updateArgs="[true, true, true]"
-            ></highcharts
-            >
-
+              :constructorType="'stockChart'"
+              class="hc"
+              :options="chartOptions"
+              ref="chart1"
+              :updateArgs="[true, true, true]"
+            ></highcharts>
           </v-col>
-
-
         </v-row>
       </v-container>
     </v-main>
@@ -104,14 +78,13 @@
 <script>
 /* eslint-disable */
 
-import RoundSlider from "vue-round-slider";
-import {Chart} from "highcharts-vue";
+import { Chart } from "highcharts-vue";
 
 import gsap from "gsap";
 import _ from "lodash";
 
-const firstOne = window.data[0]
-const ror = _.map(window.data, (i) => (i - firstOne) / firstOne)
+const firstOne = window.data[0];
+const ror = _.map(window.data, (i) => (i - firstOne) / firstOne);
 
 const formatDown = {
   color: "red",
@@ -126,19 +99,21 @@ export default {
   name: "App",
   components: {
     highcharts: Chart,
-    RoundSlider,
   },
-  data: function () {
-    const chunkSize = 10
+  data: function() {
+    
+    const chunkSize = 10;
     const firstVal = window.data.slice(0, chunkSize);
-    const rorFirstVal = ror.slice(0, chunkSize)
+    const rorFirstVal = ror.slice(0, chunkSize);
     return {
+      reset:false,
+      sliderValue: 100,
       currentROR: (_.last(firstVal) - window.data[0]) / window.data[0],
       newPrice: window.data[0],
       previousPrice: window.data[0],
-      sliderColor: null,
+
       dialog: false,
-      sliderValue: 100,
+
       tweenedPrice: null,
       counter: 0,
       chunkSize,
@@ -153,21 +128,23 @@ export default {
               borderColor: "red",
               borderWidth: 1,
               color: "#FCFFC5", // Color value
-              from:0,
-              to: null
+              from: 0,
+              to: null,
             },
-          ]
+          ],
         },
         yAxis: {
           min: window.data[0] - (window.data[0] - window.drawdown) * 2,
-          plotLines: [{
-            value: window.drawdown,
-            color: 'red',
-            width: 2,
-            dashStyle: 'shortdash'
-          }]
+          plotLines: [
+            {
+              value: window.drawdown,
+              color: "red",
+              width: 2,
+              dashStyle: "shortdash",
+            },
+          ],
         },
-        navigator: {enabled: false},
+        navigator: { enabled: false },
         rangeSelector: {
           inputEnabled: false,
           selected: false,
@@ -177,10 +154,16 @@ export default {
             data: firstVal,
           },
         ],
-      }
+      },
     };
   },
   computed: {
+    formattedTween() {
+      return this.tweenedPrice.toFixed(2);
+    },
+    customComp() {
+      return () => import(`@/Comp${window.componentNumber}.vue`);
+    },
     direction() {
       if (this.currentPrice > this.previousPrice) {
         return formatUp;
@@ -188,53 +171,54 @@ export default {
         return formatDown;
       }
     },
-
-
   },
   watch: {
-    sliderValue(val) {
-
-      if (val === 0) {
-        this.dialog = true;
-      }
-    },
-    newPrice: function (newValue) {
-      console.debug('do we reach the watcher')
+    newPrice: function(newValue) {
+      
       gsap.to(this.$data, {
         duration: 0.5,
         tweenedPrice: newValue,
+        onUpdate: this.tweenUpd,
       });
     },
   },
   mounted() {
     this.stockInterval = setInterval(() => {
-      const newCounter = this.counter + this.chunkSize
-      this.newPrice = window.data[newCounter]
-      const oldCounter = this.counter
-      this.currentROR = (this.newPrice - window.data[0]) / window.data[0]
-      this.previousPrice = window.data[this.counter]
+      const newCounter = this.counter + this.chunkSize;
+      this.newPrice = window.data[newCounter];
+      const oldCounter = this.counter;
+      this.currentROR = (this.newPrice - window.data[0]) / window.data[0];
+      this.previousPrice = window.data[this.counter];
 
       const newData = window.data.slice(this.counter, newCounter);
       this.counter += this.chunkSize;
 
       if (this.newPrice) {
-          this.chartOptions.series[0].data.push(...newData);
-        this.chartOptions.xAxis.plotBands[0].from=oldCounter+this.chunkSize
-        this.chartOptions.xAxis.plotBands[0].to=newCounter+this.chunkSize
-
-
+        this.chartOptions.series[0].data.push(...newData);
+        this.chartOptions.xAxis.plotBands[0].from = oldCounter + this.chunkSize;
+        this.chartOptions.xAxis.plotBands[0].to = newCounter + this.chunkSize;
       } else document.getElementById("form").submit();
     }, this.tickFrequency * 1000);
   },
   methods: {
-    showDialog() {
-      this.dialog=true
+    tweenUpd(v) {
+      this.tweenedPrice=_.round(this.tweenedPrice,2)
     },
-    changeslider(v) {
+    innerShowDialog() {
+      this.dialog = true;
     },
+    sliderValChange(val) {
+      this.sliderValue = val;
+      if (val == 0) {
+        this.dialog = true;
+      }
+    },
+
     continueKeeping() {
+       
       this.sliderValue = 100;
       this.dialog = false;
+      
     },
     sell() {
       this.dialog = false;
@@ -253,4 +237,5 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+.word-break{    word-break: break-word;}
 </style>

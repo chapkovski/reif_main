@@ -12,11 +12,15 @@
     <form action='' method="post" role="form" id="form" autocomplete="off">
         {% csrf_token %}
         <script>
-            window.drawdown={{ player.get_drawdown|json }}
-            window.data = {{ player.get_data|json }}
+            window.drawdown = {{ player.get_drawdown|json }};
+            window.data = {{ player.get_data|json }};
+            window.componentNumber = {{session.config.component_number}};
         </script>
         <div id="app"></div>
         <script type="text/javascript" src="{% static 'front/js/chunk-vendors.js' %}"></script>
+        <script type="text/javascript" src="{% static 'front/js/0.js' %}"></script>
+        <script type="text/javascript" src="{% static 'front/js/1.js' %}"></script>
+        <script type="text/javascript" src="{% static 'front/js/2.js' %}"></script>
         <script type="text/javascript" src="{% static 'front/js/main.js' %}"></script>
     </form>
 
