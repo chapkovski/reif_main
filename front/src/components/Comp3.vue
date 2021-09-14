@@ -7,7 +7,7 @@
 
     <v-card-text>
       <v-slider
-        v-model="sellingDecision"
+        :value="initialValue"
         :tick-labels="ticksLabels"
         :max="3"
         step="1"
@@ -26,21 +26,23 @@
 
 <script>
 export default {
-  props: ["reset"],
-  data: () => ({
-    sellingDecision: 3,
-    ticksLabels: ["Продать", "Скорее продать", "Скорее держать", "Держать"],
-  }),
-  watch: {
-    reset(newV, oldV) {
-      if (!newV && oldV) {
-        this.sellingDecision = 3;
-      }
-    },
+  props: [ "initialValue"],
+  data() {
+    return {
+  
+      ticksLabels: ["Продать", "Скорее продать", "Скорее держать", "Держать"],
+    };
   },
+
   methods: {
     changeSliderValue(value) {
       this.$emit("sliderValChange", value);
+      if (value === 3) {
+        this.$emit("keep");
+      }
+      if (value === 0) {
+        this.$emit("sell");
+      }
     },
   },
 };

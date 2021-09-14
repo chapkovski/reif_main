@@ -39,12 +39,14 @@
         :is="customComp"
         @sliderValChange="sliderValChange"
         :sliderValue="sliderValue"
+        :initialSliderValue="initialSliderValue"
         @showDialog="innerShowDialog"
         :reset="dialog"
       />
     </v-app-bar>
     <confirm-dialog
       :dialog="dialog"
+      :currentPrice="newPrice"
       @sell="sell"
       @continueKeeping="continueKeeping"
     ></confirm-dialog>
@@ -69,6 +71,7 @@
 <script>
 /* eslint-disable */
 
+// import(/* webpackChunkName: "about" */ "../views/About.vue")
 import { Chart } from "highcharts-vue";
 import Comp1 from "./components/Comp1";
 import ConfirmDialog from "./components/ConfirmDialog";
@@ -102,6 +105,7 @@ export default {
     const firstVal = window.data.slice(0, chunkSize);
     const rorFirstVal = ror.slice(0, chunkSize);
     return {
+      initialSliderValue: 2,
       reset: false,
       sliderValue: 100,
       currentROR: (_.last(firstVal) - window.data[0]) / window.data[0],
@@ -232,6 +236,8 @@ export default {
       });
       this.sliderValue = 100;
       this.dialog = false;
+
+      this.initialSliderValue = 2;
     },
     async sell() {
       await this.sendMessage({ name: "Sell", currentPrice: this.newPrice });

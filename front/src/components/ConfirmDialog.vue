@@ -20,7 +20,7 @@
           </v-btn-toggle>
         </div>
         <div v-else>
-          <slider @sliderValChange="sell" />
+          <slider @sliderValChange="conditionalSelling" />
         </div>
       </v-card-actions>
     </v-card>
@@ -30,13 +30,27 @@
 <script>
 import Comp3 from "./Comp3";
 export default {
-  props: ["dialog"],
+  props: ["dialog", "currentPrice"],
   components: {
     slider: Comp3,
   },
   data: () => ({ innerSlider: window.innerSlider }),
 
   methods: {
+    async conditionalSelling(val) {
+      if (this.$socket.readyState == 1) {
+        const obj = {
+          name: "slider value changed",
+          sliderValue: val,
+          currentPrice: this.currentPrice,
+        };
+        await this.$socket.sendObj(obj);
+      }
+
+      if (val == 0) {
+        this.sell();
+      }
+    },
     sell() {
       this.$emit("sell");
     },

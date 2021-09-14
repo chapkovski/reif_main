@@ -3,7 +3,7 @@ from os import environ
 SESSION_CONFIGS = [
     dict(
         name='prototype1',
-        display_name="prototype1 -round slider",
+        display_name="prototype1 - round slider",
         num_demo_participants=1,
         app_sequence=['backend'],
         component_number=1
@@ -24,11 +24,19 @@ SESSION_CONFIGS = [
     ),
     dict(
         name='prototype4',
-        display_name="prototype 4:  buttons then  Slider",
+        display_name="prototype 4 - buttons then  Slider",
         num_demo_participants=1,
         app_sequence=['backend'],
         component_number=2,
         inner_slider=True,
+    ),
+    dict(
+        name='prototype5',
+        display_name="prototype 5 - combo",
+        num_demo_participants=1,
+        app_sequence=['backend'],
+        component_number=4,
+
     ),
 ]
 
