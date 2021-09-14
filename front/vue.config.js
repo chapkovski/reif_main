@@ -1,11 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  configureWebpack: (config) => {
-    config.output.filename = "js/[name].js";
-    config.output.chunkFilename = "js/[name].js";
-  },
-
+ 
   pages: {
     main: {
       entry: "./src/main.js",

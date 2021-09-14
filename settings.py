@@ -22,6 +22,14 @@ SESSION_CONFIGS = [
         app_sequence=['backend'],
         component_number=3
     ),
+    dict(
+        name='prototype4',
+        display_name="prototype 4:  buttons then  Slider",
+        num_demo_participants=1,
+        app_sequence=['backend'],
+        component_number=2,
+        inner_slider=True,
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
