@@ -10,26 +10,37 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
+        <div v-if="!innerSlider">
+          <v-btn-toggle>
+            <v-btn color="green darken-1" @click="continueKeeping">
+              Оставить
+            </v-btn>
 
-        <v-btn color="green darken-1" @click="continueKeeping">
-          Оставить
-        </v-btn>
-
-        <v-btn color="red darken-1" @click="sell"> Продать</v-btn>
+            <v-btn color="red darken-1" @click="sell"> Продать</v-btn>
+          </v-btn-toggle>
+        </div>
+        <div v-else>
+          <slider @sliderValChange="sell" />
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import Comp3 from "./Comp3";
 export default {
   props: ["dialog"],
-  data: () => ({}),
+  components: {
+    slider: Comp3,
+  },
+  data: () => ({ innerSlider: window.innerSlider }),
+
   methods: {
     sell() {
       this.$emit("sell");
     },
-     sell() {
+    continueKeeping() {
       this.$emit("continueKeeping");
     },
   },

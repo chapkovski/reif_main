@@ -43,26 +43,11 @@
         :reset="dialog"
       />
     </v-app-bar>
-    <v-dialog v-model="dialog" max-width="600">
-      <v-card>
-        <v-card-title class="text-h5"> Решение о продаже</v-card-title>
-
-        <v-card-text>
-          Вы хотите продать портфель? Если Вы выберете "продать", период
-          закончится.
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="green darken-1" @click="continueKeeping">
-            Оставить
-          </v-btn>
-
-          <v-btn color="red darken-1" @click="sell"> Продать</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <confirm-dialog
+      :dialog="dialog"
+      @sell="sell"
+      @continueKeeping="continueKeeping"
+    ></confirm-dialog>
     <v-main>
       <v-container fluid>
         <v-row>
@@ -86,6 +71,7 @@
 
 import { Chart } from "highcharts-vue";
 import Comp1 from "./components/Comp1";
+import ConfirmDialog from "./components/ConfirmDialog";
 import Comp2 from "./components/Comp2";
 import Comp3 from "./components/Comp3";
 import Comp4 from "./components/Comp4";
@@ -109,6 +95,7 @@ export default {
   name: "App",
   components: {
     highcharts: Chart,
+    ConfirmDialog,
   },
   data: function() {
     const chunkSize = 10;
@@ -210,7 +197,7 @@ export default {
     }, this.tickFrequency * 1000);
   },
   methods: {
-    async sendMessage(obj){
+    async sendMessage(obj) {
       if (this.$socket.readyState == 1) {
         await this.$socket.sendObj(obj);
       }
@@ -222,22 +209,32 @@ export default {
       this.dialog = true;
     },
     async sliderValChange(val) {
-      await  this.sendMessage({name:'slider value changed', sliderValue:val,  currentPrice:this.newPrice})
-        
+      await this.sendMessage({
+        name: "slider value changed",
+        sliderValue: val,
+        currentPrice: this.newPrice,
+      });
+
       this.sliderValue = val;
       if (val == 0) {
-        await  this.sendMessage({name:'show confirming dialog', currentPrice:this.newPrice})
+        await this.sendMessage({
+          name: "show confirming dialog",
+          currentPrice: this.newPrice,
+        });
         this.dialog = true;
       }
     },
 
     async continueKeeping() {
-      await this.sendMessage({name:'Continue keeping', currentPrice:this.newPrice})
+      await this.sendMessage({
+        name: "Continue keeping",
+        currentPrice: this.newPrice,
+      });
       this.sliderValue = 100;
       this.dialog = false;
     },
     async sell() {
-      await  this.sendMessage({name:'Sell', currentPrice:this.newPrice})
+      await this.sendMessage({ name: "Sell", currentPrice: this.newPrice });
       this.dialog = false;
       document.getElementById("form").submit();
     },
