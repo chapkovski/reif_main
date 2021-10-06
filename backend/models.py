@@ -55,9 +55,22 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     income = models.FloatField(min=3, max=25)
     volatility = models.FloatField(min=0.01, max=0.50)
-    drawdown = models.FloatField(min=2, max=4)
+    drawdown = models.FloatField(min=2, max=4, initial=3)
     data = models.LongStringField()
     current_position = models.IntegerField(initial=1)
+
+    def chart_generator(self, vol):
+        size = (Constants.steps, Constants.Npaths)
+        dt = Constants.T / Constants.steps
+        poi_rv = np.multiply(np.random.poisson(Constants.lam * dt, size=size),
+                             np.random.normal(-vol * 3, Constants.v, size=size)).cumsum(axis=0)
+        geo = np.cumsum(((vol ** 2 / 2 + Constants.r - (vol) ** 2 / 2
+                          - Constants.lam * (-(vol) * 3 + Constants.v ** 2 * 0.5)) * dt
+                         + vol * np.sqrt(dt) * np.random.normal(size=size)), axis=0)
+
+        dt = np.round_(np.exp(geo + poi_rv) * Constants.S, 3).tolist()
+        data = [j for i in dt for j in i]
+        return data
 
     def merton_jump_paths(self):
         size = (Constants.steps, Constants.Npaths)
@@ -95,6 +108,7 @@ class Player(BasePlayer):
 
         return {
             self.id_in_group: dict(timestamp=timestamp.strftime('%m_%d_%Y_%H_%M_%S'), action='getServerConfirmation')}
+
 
 class Event(djmodels.Model):
     class Meta:

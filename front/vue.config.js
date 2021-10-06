@@ -1,10 +1,14 @@
 const path = require("path");
 
 module.exports = {
- 
+  lintOnSave: false,
   pages: {
     main: {
       entry: "./src/main.js",
+      chunks: ["chunk-vendors"],
+    },
+    selector: {
+      entry: "./src/selector.js",
       chunks: ["chunk-vendors"],
     },
   },

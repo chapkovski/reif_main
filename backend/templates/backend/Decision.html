@@ -2,30 +2,28 @@
 {% load otree static %}
 
 {% block title %}
-    Decision. Period {{ view.round_number }} out of {{ Constants.num_rounds }}
-{% endblock %}
-
-{% block content %}
-
-    <label class="col-form-label">
-        Какой уровень риска для Вас допустим?
-    </label>
-
-    <br>
-
-    <div class="input-group d-inline-flex align-items-center w-auto">
-        <span class="input-group-append">1%</span>
-        <input type="range" name="volatility" min="0.01" max="0.50" step="0.01" class="form-range">
-        <span class="input-group-append">50%</span>
-    </div>
-
-    <br>
-    <br>
-
-    {% formfield player.drawdown label="Выберите максимальную просадку (в ст.откл, мин.2 макс 4)" %}
-
-
-    {% next_button %}
+    Page title
 {% endblock %}
 
 
+{% block body_main %}
+ 
+    <link rel="stylesheet" href="{% static 'front/css/chunk-vendors.css' %}">
+    <link rel="stylesheet" href="{% static 'front/css/selector.css' %}">
+    <script>
+    window.data={{ data|json }}
+    </script>
+    <form action='' method="post" role="form" id="form" autocomplete="off">
+        {% csrf_token %}
+        <script>
+
+        </script>
+        <div id="app"></div>
+        <script type="text/javascript" src="{% static 'front/js/chunk-vendors.js' %}"></script>
+        <script type="text/javascript" src="{% static 'front/js/selector.js' %}"></script>
+    </form>
+
+{% endblock %}
+
+{% block live %}
+{% endblock %}
